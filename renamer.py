@@ -10,10 +10,10 @@ mode
 """
 
 mode = 4
-prefix = 'f'
-custom_name = 'art'
+prefix = 'a'
+custom_name = 'xxx'
 sort_by_created_date = False
-sort_by_modified_date = True
+sort_by_modified_date = False
 allowed_formats = [ '.mp4', '.mov', '.avi', '.png', '.jpg' ]
 
 if (
