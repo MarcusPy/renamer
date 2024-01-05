@@ -4,15 +4,16 @@ import os
 mode
 1 - add prefix, add index
 2 - add prefix, keep original name
-3 - add custom name, add index
-4 - add prefix, add custom name, add index
-5 - trim first found prefix
+3 - add prefix, keep original name, add index
+4 - add custom name, add index
+5 - add prefix, add custom name, add index
+6 - trim first found prefix
 """
 
-mode = 4
-prefix = 'a'
-custom_name = 'xxx'
-sort_by_created_date = False
+mode = 1
+prefix = 'f'
+custom_name = 'pic'
+sort_by_created_date = True
 sort_by_modified_date = False
 allowed_formats = [ '.mp4', '.mov', '.avi', '.png', '.jpg' ]
 
@@ -48,10 +49,7 @@ else:
 
 def sort_by_x_date(enabled:'int'=0) -> 'list':
     if enabled > 0:
-        this_path = os.getcwd()
-        files = []
-        for file in os.listdir():
-            files.append(this_path + '\\' + file)
+        files = [file for file in os.listdir()]
         
         if enabled == 1:
             files.sort(key=os.path.getctime)
@@ -82,7 +80,7 @@ if mode == 1:
     trim_prefix()
     files = sort_by_x_date(sort_mode)
     for idx, file in enumerate(files):
-        name, ext = os.path.splitext(file)
+        _, ext = os.path.splitext(file)
         if ext.lower() not in allowed_formats:
             continue
         new_name = f'{prefix}_{idx+1}{ext.lower()}'
@@ -102,10 +100,10 @@ elif mode == 3:
     trim_prefix()
     files = sort_by_x_date(sort_mode)
     for idx, file in enumerate(files):
-        _, ext = os.path.splitext(file)
+        name, ext = os.path.splitext(file)
         if ext.lower() not in allowed_formats:
             continue
-        new_name = f'{custom_name}_{idx+1}{ext.lower()}'
+        new_name = f'{prefix}_{name}_{idx+1}{ext.lower()}'
         os.rename(file, new_name)
 
 elif mode == 4:
@@ -115,8 +113,18 @@ elif mode == 4:
         _, ext = os.path.splitext(file)
         if ext.lower() not in allowed_formats:
             continue
-        new_name = f'{prefix}_{custom_name}_{idx+1}{ext.lower()}'
+        new_name = f'{custom_name}_{idx+1}{ext.lower()}'
         os.rename(file, new_name)
 
 elif mode == 5:
+    trim_prefix()
+    files = sort_by_x_date(sort_mode)
+    for idx, file in enumerate(files):
+        _, ext = os.path.splitext(file)
+        if ext.lower() not in allowed_formats:
+            continue
+        new_name = f'{prefix}_{custom_name}_{idx+1}{ext.lower()}'
+        os.rename(file, new_name)
+
+elif mode == 6:
     trim_prefix()
