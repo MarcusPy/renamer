@@ -156,13 +156,13 @@ def sort_by_x_date() -> list:
     files = [file for file in os.listdir(PATH) for ext in ALLOWED_FORMATS if ext in file]
     if sort_mode > 0:
         if sort_mode == 1:
-            _files = [ PATH + file for file in files ]
-            _files.sort(key=os.path.getctime)
-            files = [file.replace(PATH, '') for file in _files]
+            files = [ PATH + file for file in files ]
+            files.sort(key=os.path.getctime)
+            files = [file.replace(PATH, '') for file in files]
         elif sort_mode == 2:
-            _files = [ PATH + file for file in files ]
-            _files.sort(key=os.path.getmtime)
-            files = [file.replace(PATH, '') for file in _files]
+            files = [ PATH + file for file in files ]
+            files.sort(key=os.path.getmtime)
+            files = [file.replace(PATH, '') for file in files]
             
         return files
     elif sort_mode == 0:
