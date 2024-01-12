@@ -54,13 +54,13 @@ Available modes:
             trim_all_prefixes (Recommended, but read the comment first)
 """
 
-MODE: int = 4
+MODE: int = 1
 
 # make sure the r is before the first string
-PATH: str = r'C:\Users\Marcu\OneDrive\Documents\_\porn\Feet Pics'
-USE_CURRENT_WORKING_DIRECTORY: bool = False
+PATH: str = r''
+USE_CURRENT_WORKING_DIRECTORY: bool = True
 
-PREFIX: str = 'f'
+PREFIX: str = 'd'
 
 CUSTOM_NAME: str = 'pic'
 
@@ -84,7 +84,7 @@ TRIM_ALL_PREFIXES: bool = True
 
 REVISION = [
     '12/I/2024',
-    'v1.1'
+    'v1.2'
 ]
 
 errors = [param for param, condition in zip(
@@ -156,9 +156,13 @@ def sort_by_x_date() -> list:
     files = [file for file in os.listdir(PATH) for ext in ALLOWED_FORMATS if ext in file]
     if sort_mode > 0:
         if sort_mode == 1:
-            files.sort(key=os.path.getctime)
+            _files = [ PATH + file for file in files ]
+            _files.sort(key=os.path.getctime)
+            files = [file.replace(PATH, '') for file in _files]
         elif sort_mode == 2:
-            files.sort(key=os.path.getmtime)
+            _files = [ PATH + file for file in files ]
+            _files.sort(key=os.path.getmtime)
+            files = [file.replace(PATH, '') for file in _files]
             
         return files
     elif sort_mode == 0:
