@@ -93,7 +93,7 @@ errors = [param for param, condition in zip(
         'Parametre [PATH] must be a string',
         'Parametre [USE_CURRENT_WORKING_DIRECTORY] must be a bool', #must be before 2nd path check
         'Parametre [PATH] must not be empty when [USE_CURRENT_WORKING_DIRECTORY] is disabled',
-        'Parametre [PATH] must be empty when [USE_CURRENT_WORKING_DIRECTORY] is enabled',
+        'Parametre [PATH] must be empty when [USE_CURRENT_WORKING_DIRECTORY] is enabled, choose either of them',
         'Parametre [PREFIX] must be a string',
         'Parametre [PREFIX] must not be empty',
         'Parametre [CUSTOM_NAME] must be a string',
