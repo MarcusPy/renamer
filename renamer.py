@@ -56,6 +56,7 @@ Available modes:
 
 MODE: int = 1
 
+# set a custom path to a directory or use the script only in the current folder
 # make sure the r is before the first string
 PATH: str = r''
 USE_CURRENT_WORKING_DIRECTORY: bool = True
