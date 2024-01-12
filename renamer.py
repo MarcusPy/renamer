@@ -55,14 +55,24 @@ Available modes:
 """
 
 MODE: int = 4
+
+# make sure the r is before the first string
+PATH: str = r'C:\Users\Marcu\OneDrive\Documents\_\porn\Feet Pics'
+USE_CURRENT_WORKING_DIRECTORY: bool = False
+
 PREFIX: str = 'f'
+
 CUSTOM_NAME: str = 'pic'
+
 SORT_BY_CREATED_DATE: bool = False
 SORT_BY_MODIFIED_DATE: bool = False
+
 ALLOWED_FORMATS: list[str] = [ '.mp4', '.mov', '.avi', '.png', '.jpg' ]
+
 # will remove every index that follows this template, until reaches <other>:
 # <other><separator><number>[...]<separator><number>
 SEPARATORS: list[str] = [ ' ', '_' ]
+
 # will remove every prefix that follows this template:
 # <any>_[...]<any>_
 # so make sure your name does not contain any underscores _
@@ -74,12 +84,16 @@ TRIM_ALL_PREFIXES: bool = True
 
 REVISION = [
     '12/I/2024',
-    'v1.0'
+    'v1.1'
 ]
 
 errors = [param for param, condition in zip(
     [
         'Parametre [MODE] must be a string',
+        'Parametre [PATH] must be a string',
+        'Parametre [USE_CURRENT_WORKING_DIRECTORY] must be a bool', #must be before 2nd path check
+        'Parametre [PATH] must not be empty when [USE_CURRENT_WORKING_DIRECTORY] is disabled',
+        'Parametre [PATH] must be empty when [USE_CURRENT_WORKING_DIRECTORY] is enabled',
         'Parametre [PREFIX] must be a string',
         'Parametre [PREFIX] must not be empty',
         'Parametre [CUSTOM_NAME] must be a string',
@@ -97,6 +111,10 @@ errors = [param for param, condition in zip(
     ],
     [
         isinstance(MODE, int),
+        isinstance(PATH, str),
+        isinstance(USE_CURRENT_WORKING_DIRECTORY, bool),
+        not (PATH == '' and not USE_CURRENT_WORKING_DIRECTORY),
+        not (PATH != '' and USE_CURRENT_WORKING_DIRECTORY),
         isinstance(PREFIX, str),
         PREFIX != '',
         isinstance(CUSTOM_NAME, str),
@@ -125,17 +143,25 @@ else:
         sort_mode = 2
     else:
         sort_mode = 0
+        
+    if USE_CURRENT_WORKING_DIRECTORY:
+        PATH = os.getcwd()
+    else:
+        if not os.path.exists(PATH):
+            abort('Process aborted, PATH does not exist')
 
-def sort_by_x_date(enabled:int=0) -> list:
-    files = [file for file in os.listdir() for ext in ALLOWED_FORMATS if ext in file]
-    if enabled > 0:
-        if enabled == 1:
+    PATH += '\\'
+
+def sort_by_x_date() -> list:
+    files = [file for file in os.listdir(PATH) for ext in ALLOWED_FORMATS if ext in file]
+    if sort_mode > 0:
+        if sort_mode == 1:
             files.sort(key=os.path.getctime)
-        elif enabled == 2:
+        elif sort_mode == 2:
             files.sort(key=os.path.getmtime)
             
         return files
-    elif enabled == 0:
+    elif sort_mode == 0:
         return files
 
 def trimmer(file_list:list=[], trim_idx:bool=True, trim_pre:bool=True) -> list:
@@ -189,37 +215,37 @@ def trimmer(file_list:list=[], trim_idx:bool=True, trim_pre:bool=True) -> list:
     return done, unique
 
 def trim_temp():
-    for file in os.listdir():
+    for file in os.listdir(PATH):
         name = file.replace('temp_', '')
-        os.rename(file, name)
+        os.rename(PATH + file, PATH + name)
 
 if MODE == 1:
-    files = sort_by_x_date(sort_mode)
+    files = sort_by_x_date()
     for idx, file in enumerate(files):
         _, ext = os.path.splitext(file)
         new_name = f'temp_{PREFIX}_{idx+1}{ext.lower()}'
-        os.rename(file, new_name)
+        os.rename(PATH + file, PATH + new_name)
 
 elif MODE == 2:
-    files = sort_by_x_date(sort_mode)
+    files = sort_by_x_date()
     names, unique = trimmer(files, trim_pre=False)
     for idx, file in enumerate(files):
         _, ext = os.path.splitext(file)
         val = unique.get(names[idx])
         unique[names[idx]] += 1
         new_name = f'temp_{names[idx]} {val}{ext.lower()}'
-        os.rename(file, new_name)
+        os.rename(PATH + file, PATH + new_name)
 
 elif MODE == 3:
-    files = sort_by_x_date(sort_mode)
+    files = sort_by_x_date()
     names, unique = trimmer(files, False)
     for idx, file in enumerate(files):
         _, ext = os.path.splitext(file)
         new_name = f'temp_{PREFIX}_{names[idx]}{ext.lower()}'
-        os.rename(file, new_name)
+        os.rename(PATH + file, PATH + new_name)
 
 elif MODE == 4:
-    files = sort_by_x_date(sort_mode)
+    files = sort_by_x_date()
     names, unique = trimmer(files)
     for idx, file in enumerate(files):
         _, ext = os.path.splitext(file)
@@ -227,20 +253,20 @@ elif MODE == 4:
         unique[names[idx]] += 1
         #print(f'NAME: {names[idx]} | USED: {val}')
         new_name = f'temp_{PREFIX}_{names[idx]} {val}{ext.lower()}'
-        os.rename(file, new_name)
+        os.rename(PATH + file, PATH + new_name)
 
 elif MODE == 5:
-    files = sort_by_x_date(sort_mode)
+    files = sort_by_x_date()
     for idx, file in enumerate(files):
         _, ext = os.path.splitext(file)
         new_name = f'{CUSTOM_NAME} {idx+1}{ext.lower()}'
-        os.rename(file, new_name)
+        os.rename(PATH + file, PATH + new_name)
 
 elif MODE == 6:
-    files = sort_by_x_date(sort_mode)
+    files = sort_by_x_date()
     for idx, file in enumerate(files):
         _, ext = os.path.splitext(file)
         new_name = f'{PREFIX}_{CUSTOM_NAME} {idx+1}{ext.lower()}'
-        os.rename(file, new_name)
+        os.rename(PATH + file, PATH + new_name)
 
 trim_temp()
