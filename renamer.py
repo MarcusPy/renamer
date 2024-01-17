@@ -3,6 +3,12 @@ from sys import exit as abort
 os.system("cls")
 
 """
+    TODO:
+    gui
+    stats
+"""
+
+"""
 Available modes:
     1 - Prefix + Index
         Required:
@@ -59,7 +65,7 @@ MODE: int = 1
 # set a custom path to a directory or use the script only in the current folder
 # make sure the r is before the first string
 PATH: str = r''
-USE_CURRENT_WORKING_DIRECTORY: bool = True
+USE_CURRENT_WORKING_DIRECTORY: bool = False
 
 PREFIX: str = 'd'
 
@@ -84,8 +90,8 @@ TRIM_ALL_PREFIXES: bool = True
 #######################################################################################
 
 REVISION = [
-    '12/I/2024',
-    'v1.2'
+    '17/I/2024',
+    'v1.3'
 ]
 
 errors = [param for param, condition in zip(
@@ -264,14 +270,14 @@ elif MODE == 5:
     files = sort_by_x_date()
     for idx, file in enumerate(files):
         _, ext = os.path.splitext(file)
-        new_name = f'{CUSTOM_NAME} {idx+1}{ext.lower()}'
+        new_name = f'temp_{CUSTOM_NAME} {idx+1}{ext.lower()}'
         os.rename(PATH + file, PATH + new_name)
 
 elif MODE == 6:
     files = sort_by_x_date()
     for idx, file in enumerate(files):
         _, ext = os.path.splitext(file)
-        new_name = f'{PREFIX}_{CUSTOM_NAME} {idx+1}{ext.lower()}'
+        new_name = f'temp_{PREFIX}_{CUSTOM_NAME} {idx+1}{ext.lower()}'
         os.rename(PATH + file, PATH + new_name)
 
 trim_temp()
